@@ -1,0 +1,79 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Menengahkan vertikal */
+  min-height: 100vh;
+  background-color: #ffffff; /* Background putih bersih */
+  padding: 20px;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 400px; /* Lebar area form */
+  padding: 20px;
+  /* Kita hilangkan shadow dan background card agar minimalis seperti contoh */
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-family: "Times New Roman", Times, serif; /* Font Serif sesuai gambar */
+  font-size: 2.5rem;
+  color: #000;
+  font-weight: 400; /* Tidak terlalu tebal */
+}
+
+.inputGroup {
+  margin-bottom: 2rem; /* Spacing antar input agak jauh */
+  position: relative;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: #666; /* Abu-abu agak gelap */
+  font-family: sans-serif; /* Label tetap sans-serif agar terbaca jelas */
+}
+
+.input {
+  width: 100%;
+  padding: 10px 0; /* Padding atas bawah, kiri kanan 0 */
+  border: none;
+  border-bottom: 1px solid #d1d1d1; /* Garis bawah saja */
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  transition: border-color 0.3s;
+  color: #000;
+}
+
+.input:focus {
+  border-bottom: 1px solid #000; /* Saat diklik garis jadi hitam */
+}
+
+.button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 2rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000; /* Border hitam */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: sans-serif;
+}
+
+.button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.linkText {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  font-family: sans-serif;
+}
