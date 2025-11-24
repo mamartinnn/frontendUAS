@@ -1,0 +1,63 @@
+/* Gunakan style container yang sama agar konsisten, tapi width max lebih lebar */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    grid-template-columns: 2fr 1fr; /* Kiri konten, Kanan ringkasan */
+  }
+}
+
+.section {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 1rem;
+}
+
+.heading {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  border-top: 1px dashed #ccc;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.payButton {
+  width: 100%;
+  padding: 15px;
+  background-color: #28a745; /* Warna hijau untuk aksi bayar */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+}
