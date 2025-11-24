@@ -1,0 +1,136 @@
+.produkSale {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.produkSale h2 {
+  margin-bottom: 20px;
+  font-size: 2em;
+  text-align: left;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.produkContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.produkCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
+  background-color: #fff;
+  height: 100%;
+  transition: transform 0.3s ease;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.produkCard:hover {
+  transform: translateY(-5px);
+}
+
+.produkImageLink {
+  text-decoration: none;
+  color: inherit;
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.produkCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.produkCard h3,
+.produkCard .price {
+  margin: 0;
+  padding: 10px 15px 0 15px;
+}
+
+.produkCard h3 {
+  font-size: 1.2em;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 1rem;
+  color: #000;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: #888;
+  margin-left: 8px;
+}
+
+.addToCart {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  margin: 15px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.addToCart:hover {
+  background-color: #333;
+}
+
+.addNewCard {
+  border: 2px dashed #ccc;
+  background-color: #f9f9f9;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.addNewCard:hover {
+  transform: translateY(0);
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.addNewLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: #555;
+}
+
+.addNewContent {
+  text-align: center;
+}
+
+.plusSign {
+  font-size: 4em;
+  font-weight: 200;
+  line-height: 1;
+  display: block;
+}
+
+.addNewContent p {
+  font-size: 1.2em;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+@media (min-width: 992px) {
+  .produkContainer {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
