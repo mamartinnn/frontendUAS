@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import styles from './cart.module.css';
+import styles from './wishlist.module.css';
 
 export default function CartPage() {
   return (
