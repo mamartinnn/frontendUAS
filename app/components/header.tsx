@@ -8,11 +8,11 @@ export default function Header() {
         <Link href="/">DE LA ROPA</Link>
       </div>
       <div className={styles.links}>
-        <Link href="/produk/detail">Products</Link>
+        <Link href="/produk">Products</Link>
       </div>
       <div className={styles.actions}>
         <Link href="/account">my account</Link>
-        <Link href="/cart">shopping cart</Link>
+        <Link href="/wishlist">shopping cart</Link>
       </div>
     </nav>
   );

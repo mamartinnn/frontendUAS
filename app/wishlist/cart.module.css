@@ -1,0 +1,151 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: inherit;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 50px 4fr 1.5fr 1fr 1.5fr;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  color: #888;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.headerItem {
+  font-weight: 400;
+}
+
+.cartItem {
+  display: grid;
+  grid-template-columns: 50px 4fr 1.5fr 1fr 1.5fr;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.removeButton:hover {
+  color: #000;
+}
+
+.productDetail {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.productName {
+  font-weight: 500;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.productSize {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.price, .totalPrice {
+  font-size: 1rem;
+}
+
+.quantityInput {
+  width: 50px;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 1rem;
+}
+
+.saveBadge {
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  color: #555;
+  border-radius: 2px;
+}
+
+.grandTotal {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.checkoutButton {
+  margin-top: 10px;
+  padding: 15px 40px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 300px;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.checkoutButton:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .tableHeader {
+    display: none;
+  }
+  
+  .cartItem {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .productDetail {
+    flex-direction: column;
+  }
+  
+  .summary {
+    align-items: center;
+  }
+}
