@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import styles from './history.module.css';
 
 type ProductItem = {
   name: string;
@@ -12,107 +13,124 @@ type ProductItem = {
 type Order = {
   id: string;
   date: string;
-  status: 'Selesai' | 'Sedang Dikirim' | 'Diproses';
+  status: 'Selesai' | 'Sedang Dikirim' | 'Diproses' | 'Delivered';
   total: number;
   items: ProductItem[];
 };
 
 export default function HistoryPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  const orders: Order[] = [
+    {
+      id: '#DLR-1023',
+      date: '15 November 2025',
+      status: 'Delivered', 
+      total: 129.00,
+      items: [
+        {
+          name: 'Tailored Blazer',
+          qty: 1,
+          price: 129.00,
+          image: '', 
+        },
+      ],
+    },
+    {
+      id: '#DLR-1018',
+      date: '08 November 2025',
+      status: 'Delivered', 
+      total: 89.00,
+      items: [
+        {
+          name: 'Linen Summer Dress',
+          qty: 1,
+          price: 89.00,
+          image: '',
+        },
+      ],
+    },
+  ];
 
-  useEffect(() => {
-    async function fetchHistory() {
-      try {
-        const response = await fetch('/api/riwayat');
-        const data = await response.json();
-        
-        setOrders(data);
-      } catch (error) {
-        console.error('Gagal mengambil data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchHistory();
-  }, []);
-
-  const getStatusColor = (status: string) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
-      case 'Selesai': return 'status-success';
-      case 'Sedang Dikirim': return 'status-primary';
-      default: return 'status-default';
+      case 'Selesai': 
+      case 'Delivered': 
+        return styles.statusSuccess;
+      case 'Sedang Dikirim': 
+        return styles.statusPrimary; 
+      default: 
+        return styles.statusDefault;
     }
   };
 
-  if (isLoading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Memuat riwayat...</div>;
-  }
-
   return (
-    <div className="history-container">
-      <h1 className="page-title">Riwayat Pembelian</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Riwayat Pembelian</h1>
 
-      {orders.length === 0 && (
-        <p>Belum ada riwayat pembelian.</p>
-      )}
-
-      <div className="order-list">
-        {/* Render data dari State 'orders', bukan variabel dummy lagi */}
-        {orders.map((order) => (
-          <div key={order.id} className="order-card">
-            
-            {/* Header */}
-            <div className="order-header">
-              <div className="order-info">
-                <span className="order-id">ID Pesanan: {order.id}</span>
-                <span className="order-date">Tanggal: {order.date}</span>
-              </div>
-              <span className={`status-badge ${getStatusColor(order.status)}`}>
-                {order.status}
-              </span>
-            </div>
-
-            {/* Items */}
-            <div className="order-items">
-              {order.items.map((item, index) => (
-                <div key={index} className="item-row">
-                  <div className="item-image">
-                    <img src={item.image} alt={item.name} />
-                  </div>
-                  <div className="item-details">
-                    <h3 className="item-name">{item.name}</h3>
-                    <p className="item-qty">Jumlah: {item.qty}</p>
-                  </div>
-                  <div className="item-price">${item.price}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Footer */}
-            <div className="order-footer">
-              <div className="total-section">
-                <span>Total: </span>
-                <span className="total-price">${order.total}</span>
-              </div>
+      {orders.length === 0 ? (
+        <p style={{textAlign: 'center', color: '#666'}}>Belum ada riwayat pembelian.</p>
+      ) : (
+        <div className={styles.list}>
+          {orders.map((order) => (
+            <div key={order.id} className={styles.orderCard}>
               
-              <div className="action-buttons">
-                {order.status === 'Selesai' && (
-                  <>
-                    <button className="btn btn-outline">Beli Lagi</button>
-                    <button className="btn btn-dark">Beri Ulasan</button>
-                  </>
-                )}
-                {order.status === 'Sedang Dikirim' && (
-                    <button className="btn btn-primary">Lacak Paket</button>
-                )}
+              <div className={styles.header}>
+                <div>
+                  <div className={styles.orderId}>ID Pesanan: {order.id}</div>
+                  <span className={styles.orderDate}>{order.date}</span>
+                </div>
+                <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
+                  {order.status}
+                </span>
               </div>
-            </div>
 
-          </div>
-        ))}
-      </div>
+              <div>
+                {order.items.map((item, index) => (
+                  <div key={index} className={styles.itemRow}>
+                    <div className={styles.imageContainer}>
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className={styles.productImage} 
+                      />
+                    </div>
+                    
+                    <div className={styles.itemDetails}>
+                      <h3 className={styles.itemName}>{item.name}</h3>
+                      <p className={styles.itemQty}>Jumlah: {item.qty} item</p>
+                    </div>
+
+                    <div className={styles.itemPrice}>
+                      ${item.price.toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.footer}>
+                <div>
+                  <span className={styles.totalLabel}>Total Belanja:</span>
+                  <span className={styles.totalPrice}>${order.total.toFixed(2)}</span>
+                </div>
+                
+                <div className={styles.actionButtons}>
+                  {(order.status === 'Selesai' || order.status === 'Delivered') && (
+                    <>
+                      <button className={`${styles.btn} ${styles.btnOutline}`}>
+                        Beli Lagi
+                      </button>
+                      <button className={`${styles.btn} ${styles.btnDark}`}>
+                        Beri Ulasan
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
