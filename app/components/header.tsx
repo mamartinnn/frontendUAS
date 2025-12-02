@@ -11,7 +11,7 @@ export default function Header() {
         <Link href="/produk">Products</Link>
       </div>
       <div className={styles.actions}>
-        <Link href="/account">my account</Link>
+        <Link href="/profile">my account</Link>
         <Link href="/wishlist">shopping cart</Link>
       </div>
     </nav>
