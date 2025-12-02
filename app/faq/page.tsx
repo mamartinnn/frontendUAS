@@ -1,18 +1,23 @@
-'use client'
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
+import styles from './faq.module.css'; 
 
 const faqData = [
   {
     question: 'Bagaimana cara melakukan pemesanan?',
-    answer: 'Anda bisa memilih produk, menambahkannya ke keranjang, dan melanjutkan ke checkout...',
+    answer: 'Anda bisa memilih produk, menambahkannya ke keranjang, lalu checkout dan melakukan pembayaran.',
   },
   {
     question: 'Apa saja metode pembayaran yang diterima?',
-    answer: 'Kami menerima transfer bank, kartu kredit, dan e-wallet...',
+    answer: 'Kami menerima berbagai metode pembayaran termasuk transfer bank, kartu kredit, dan e-wallet.',
   },
   {
     question: 'Berapa lama waktu pengiriman?',
-    answer: 'Waktu pengiriman estimasi 3-5 hari kerja untuk Jabodetabek dan 5-10 hari untuk luar Jabodetabek.',
+    answer: 'Waktu pengiriman estimasi 3-5 hari kerja untuk wilayah Jabodetabek dan 5-10 hari kerja untuk luar Jabodetabek.',
+  },
+  {
+    question: 'Apakah bisa melakukan pengembalian barang?',
+    answer: 'Ya, pengembalian barang dapat dilakukan maksimal 3 hari setelah barang diterima dengan syarat tertentu.',
   },
 ];
 
@@ -24,41 +29,42 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <h1 style={{ marginBottom: '2rem', fontSize: '2rem', fontWeight: 'bold' }}>
-        Frequently Asked Questions (FAQ)
-      </h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Frequently Asked Questions (FAQ)</h1>
 
-      <div className="faq-list">
-        {faqData.map((item, index) => (
-          <div key={index} className="faq-item" style={{ borderBottom: '1px solid #eee', padding: '1rem 0' }}>
-            <button
-              onClick={() => handleItemClick(index)}
-              className="faq-trigger"
-              style={{
-                width: '100%',
-                textAlign: 'left',
-                background: 'none',
-                border: 'none',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
+      <div className={styles.list}>
+        {faqData.map((item, index) => {
+          const isOpen = openItemIndex === index;
+
+          return (
+            <div 
+              key={index} 
+              className={`${styles.item} ${isOpen ? styles.activeItem : ''}`}
             >
-              <span>{item.question}</span>
-              <span>{openItemIndex === index ? '-' : '+'}</span>
-            </button>
+              <button 
+                type="button"
+                className={styles.question} 
+                onClick={() => handleItemClick(index)}
+              >
+                <span className={styles.questionText}>{item.question}</span>
+                <span className={styles.icon}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
 
-            {openItemIndex === index && (
-              <div className="faq-content" style={{ padding: '1rem 0 0 0', color: '#333' }}>
-                {item.answer}
+              <div 
+                className={styles.answerWrapper}
+                aria-hidden={!isOpen}
+              >
+                <div className={styles.answerContent}>
+                  {item.answer}
+                </div>
               </div>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
