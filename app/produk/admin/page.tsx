@@ -1,22 +1,30 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { prisma } from '@/lib/prisma';
 import styles from './admin.module.css';
 
-const products = [
-  { id: 1, name: 'BAJU A', price: 'IDR 450.000', originalPrice: 'IDR 699.000', image: '/images/cropped-Gambar1.jpg' },
-  { id: 2, name: 'BAJU B', price: 'IDR 450.000', originalPrice: 'IDR 699.000', image: '/images/cropped-Gambar2.jpg' },
-  { id: 3, name: 'BAJU C', price: 'IDR 450.000', originalPrice: 'IDR 699.000', image: '/images/cropped-Gambar3.webp' },
-];
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  origPrice: number;
+  image: string;
+}
 
-export default function AdminPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function AdminDashboard() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
   return (
     <div className={styles.produkSale}>
-      <h2>Manage Products</h2>
+      <h2>Admin Dashboard</h2>
 
       <div className={styles.produkContainer}>
-        
-        <div className={`${styles.produkCard} ${styles.addNewCard}`}>
-          <Link href="/produk/admin/detail" className={styles.addNewLink}>
+        <div className={styles.addNewCard}>
+          <Link href="/produk/admin/create" className={styles.addNewLink}>
             <div className={styles.addNewContent}>
               <span className={styles.plusSign}>+</span>
               <p>Add New Product</p>
@@ -24,23 +32,23 @@ export default function AdminPage() {
           </Link>
         </div>
 
-        {products.map((product) => (
+        {products.map((product: Product) => (
           <div key={product.id} className={styles.produkCard}>
-            <Link href={`/produk/admin/detail${product.id}`} className={styles.produkImageLink}>
+            <Link href={`/produk/${product.id}`} className={styles.produkImageLink}>
               <Image
                 src={product.image}
                 alt={product.name}
-                fill
-                sizes="(max-width: 992px) 50vw, 25vw"
+                width={400}
+                height={533}
                 style={{ objectFit: 'cover' }}
               />
-            </Link>
-            <h3>{product.name}</h3>
-            <p className={styles.price}>
-              {product.price} <span className={styles.originalPrice}>{product.originalPrice}</span>
-            </p>
-            <Link href={`/produk/admin/detail/${product.id}`} className={styles.addToCart}>
-              Edit Product
+              <h3>{product.name}</h3>
+              <p className={styles.price}>
+                IDR {product.price.toLocaleString('id-ID')}
+                <span className={styles.originalPrice}>
+                  IDR {product.origPrice.toLocaleString('id-ID')}
+                </span>
+              </p>
             </Link>
           </div>
         ))}
