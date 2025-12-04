@@ -11,6 +11,9 @@ export default async function ProductDetailPage(props: Props) {
 
   const product = await prisma.product.findUnique({
     where: { id: params.id },
+    include: {
+        productImages: true
+    }
   });
 
   if (!product) notFound();
@@ -18,6 +21,9 @@ export default async function ProductDetailPage(props: Props) {
   const serializedProduct = {
     ...product,
     createdAt: product.createdAt.toISOString(),
+    productImages: product.productImages.map(img => ({
+        ...img,
+    }))
   };
 
   return <ProductClient product={serializedProduct} />;

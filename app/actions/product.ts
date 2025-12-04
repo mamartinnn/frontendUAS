@@ -11,18 +11,35 @@ export async function createProduct(formData: FormData) {
   const price = parseInt(formData.get('price') as string);
   const origPrice = parseInt(formData.get('origPrice') as string);
   const description = formData.get('description') as string;
-  const imageFile = formData.get('imageUpload') as File;
+  
+  const imageFiles = formData.getAll('imageUpload') as File[];
+  const validImages = imageFiles.filter(file => file.size > 0);
+  const finalImages = validImages.slice(0, 10);
 
-  let imagePath = '/images/placeholder.jpg';
+  let uploadedPaths: string[] = [];
 
-  if (imageFile && imageFile.size > 0) {
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
-    const fileName = `${Date.now()}-${imageFile.name}`;
+  if (finalImages.length > 0) {
     const uploadDir = path.join(process.cwd(), 'public/uploads');
     
-    await fs.writeFile(path.join(uploadDir, fileName), buffer);
-    imagePath = `/uploads/${fileName}`;
+    try {
+        await fs.access(uploadDir);
+    } catch {
+        await fs.mkdir(uploadDir, { recursive: true });
+    }
+
+    for (const imageFile of finalImages) {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '');
+        const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}-${cleanName}`;
+        
+        await fs.writeFile(path.join(uploadDir, fileName), buffer);
+        uploadedPaths.push(`/uploads/${fileName}`);
+    }
+  } else {
+    uploadedPaths.push('/images/placeholder.png');
   }
+
+  const mainImage = uploadedPaths[0];
 
   await prisma.product.create({
     data: {
@@ -30,7 +47,12 @@ export async function createProduct(formData: FormData) {
       price,
       origPrice,
       description,
-      image: imagePath,
+      image: mainImage,
+      productImages: {
+        create: uploadedPaths.map((path) => ({
+            url: path
+        }))
+      }
     },
   });
 

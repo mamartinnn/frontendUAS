@@ -10,28 +10,59 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-.previewImage {
+.previewMain {
+  position: relative;
   width: 100%;
+  aspect-ratio: 3/4;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
   border-radius: 8px;
-  object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.uploadBtn {
-  display: inline-block;
-  padding: 10px 20px;
+.previewGrid {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.previewThumb {
+  position: relative;
+  width: 60px;
+  height: 80px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: default;
+}
+
+.previewThumb.active {
+  border: 2px solid #000;
+}
+
+.customUploadBtn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
   border: 1px solid #000;
   background: transparent;
+  color: #000;
   cursor: pointer;
   font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
   transition: all 0.3s;
+  border-radius: 4px;
 }
 
-.uploadBtn:hover {
+.customUploadBtn:hover {
   background: #000;
   color: #fff;
 }
@@ -41,7 +72,7 @@
 }
 
 .inputGroup {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .flexItem {
@@ -53,18 +84,20 @@
   font-size: 0.8rem;
   color: #666;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .inputText {
   width: 100%;
-  padding: 10px 0;
+  padding: 12px 0;
   border: none;
-  border-bottom: 1px solid #ccc;
-  font-size: 1.2rem;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 1.1rem;
   outline: none;
   transition: border-color 0.3s;
+  background: transparent;
 }
 
 .inputText:focus {
@@ -73,34 +106,55 @@
 
 .row {
   display: flex;
-  gap: 20px;
+  gap: 30px;
 }
 
 .textArea {
   width: 100%;
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #e5e5e5;
   background: #f9f9f9;
   border-radius: 4px;
-  min-height: 120px;
+  min-height: 150px;
   outline: none;
   resize: vertical;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.textArea:focus {
+  border-color: #000;
+  background: #fff;
 }
 
 .submitBtn {
   width: 100%;
-  padding: 15px;
+  padding: 18px;
   background-color: #000;
   color: #fff;
   border: none;
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 30px;
   transition: opacity 0.3s;
 }
 
 .submitBtn:hover {
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .formContainer {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .row {
+    flex-direction: column;
+    gap: 20px;
+  }
 }

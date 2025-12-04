@@ -214,4 +214,22 @@
   .wrapper {
     padding: 20px; 
   }
+
+.logoutButton {
+  margin-top: 15px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #d9534f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #c9302c;
+}
 }

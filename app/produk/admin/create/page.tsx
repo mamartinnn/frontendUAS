@@ -6,33 +6,53 @@ import styles from './create.module.css';
 import { createProduct } from '@/app/actions/product';
 
 export default function CreateProductPage() {
-  const [preview, setPreview] = useState<string>('/images/placeholder.jpg');
+  const [previews, setPreviews] = useState<string[]>(['/images/placeholder.jpg']);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      if (files.length > 10) {
+        alert('Maksimal hanya boleh 10 gambar.');
+        e.target.value = ''; 
+        return;
+      }
+
+      const newPreviews = Array.from(files).map(file => URL.createObjectURL(file));
+      setPreviews(newPreviews);
     }
   };
 
   return (
     <form action={createProduct} className={styles.formContainer}>
       <div className={styles.imageSection}>
-        <Image 
-          src={preview} 
-          alt="Preview" 
-          width={400} 
-          height={600} 
-          className={styles.previewImage} 
-        />
-        <label htmlFor="imageUpload" className={styles.uploadBtn}>
-          Choose Image
+        <div className={styles.previewMain}>
+            <Image 
+            src={previews[0]} 
+            alt="Main Preview" 
+            fill
+            style={{ objectFit: 'cover' }}
+            />
+        </div>
+        
+        {previews.length > 1 && (
+            <div className={styles.previewGrid}>
+                {previews.map((src, idx) => (
+                    <div key={idx} className={`${styles.previewThumb} ${idx === 0 ? styles.active : ''}`}>
+                        <Image src={src} alt={`Preview ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
+                    </div>
+                ))}
+            </div>
+        )}
+
+        <label htmlFor="imageUpload" className={styles.customUploadBtn}>
+          Choose Images (Max 10)
         </label>
         <input
           type="file"
           id="imageUpload"
           name="imageUpload"
           accept="image/*"
+          multiple
           onChange={handleImageChange}
           hidden
           required

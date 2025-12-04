@@ -6,6 +6,11 @@ import Link from 'next/link';
 import { addToCart } from '@/app/actions/cart';
 import styles from './detail.module.css';
 
+interface ProductImage {
+    id: string;
+    url: string;
+}
+
 interface ProductData {
   id: string;
   name: string;
@@ -13,6 +18,7 @@ interface ProductData {
   origPrice: number;
   description: string;
   image: string;
+  productImages: ProductImage[];
 }
 
 export default function ProductClient({ product }: { product: ProductData }) {
@@ -20,15 +26,19 @@ export default function ProductClient({ product }: { product: ProductData }) {
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [isPending, setIsPending] = useState(false);
   
-  const images = [product.image, product.image, product.image];
+  const galleryImages = product.productImages.length > 0 
+    ? product.productImages.map(img => img.url) 
+    : [product.image];
+
   const sizes = ['S', 'M', 'L', 'XL'];
+  const showSlider = galleryImages.length > 1;
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setCurrentSlide((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setCurrentSlide((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
   };
 
   const handleAddToCart = async () => {
@@ -37,15 +47,14 @@ export default function ProductClient({ product }: { product: ProductData }) {
     setIsPending(false);
   };
 
+  const trackClass = styles[`track${currentSlide}`];
+
   return (
     <div className={styles.detailContainer}>
       <div className={styles.productGallery}>
         <div className={styles.sliderContainer}>
-          <div 
-            className={styles.sliderTrack}
-            data-slide={currentSlide}
-          >
-            {images.map((img, index) => (
+          <div className={`${styles.sliderTrack} ${trackClass}`}>
+            {galleryImages.map((img, index) => (
               <div key={index} className={styles.slide}>
                 <Image
                   src={img}
@@ -59,16 +68,30 @@ export default function ProductClient({ product }: { product: ProductData }) {
           </div>
         </div>
 
-        <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevBtn}`} aria-label="Previous Slide">
-          <svg viewBox="0 0 24 24">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-          </svg>
-        </button>
-        <button onClick={nextSlide} className={`${styles.navButton} ${styles.nextBtn}`} aria-label="Next Slide">
-          <svg viewBox="0 0 24 24">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-          </svg>
-        </button>
+        {showSlider && (
+            <>
+                <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevBtn}`} aria-label="Previous Slide">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                </button>
+                <button onClick={nextSlide} className={`${styles.navButton} ${styles.nextBtn}`} aria-label="Next Slide">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                </button>
+                
+                <div className={styles.sliderDots}>
+                    {galleryImages.map((_, idx) => (
+                        <div 
+                            key={idx}
+                            onClick={() => setCurrentSlide(idx)}
+                            className={`${styles.dot} ${currentSlide === idx ? styles.dotActive : styles.dotInactive}`}
+                        />
+                    ))}
+                </div>
+            </>
+        )}
       </div>
 
       <div className={styles.productInfo}>
