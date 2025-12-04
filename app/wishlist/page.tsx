@@ -5,6 +5,7 @@ import { removeFromCart } from '@/app/actions/cart';
 import styles from './wishlist.module.css';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import QuantitySelector from './quantity-selector';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,16 +71,7 @@ export default async function WishlistPage() {
           </div>
           
           <div>
-            <form className={styles.quantityForm}>
-              <input 
-                type="number" 
-                defaultValue={item.quantity}
-                min="1"
-                className={styles.quantityInput}
-                disabled 
-                aria-label="Quantity"
-              />
-            </form>
+            <QuantitySelector id={item.id} quantity={item.quantity} />
           </div>
 
           <div className={styles.totalPrice}>
