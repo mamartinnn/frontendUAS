@@ -3,6 +3,7 @@ import styles from './history.module.css';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -91,12 +92,9 @@ export default async function HistoryPage() {
                 </div>
                 
                 <div className={styles.actionButtons}>
-                  <button className={`${styles.btn} ${styles.btnOutline}`}>
+                  <Link href="/produk" className={`${styles.btn} ${styles.btnOutline}`}>
                     Beli Lagi
-                  </button>
-                  <button className={`${styles.btn} ${styles.btnDark}`}>
-                    Beri Ulasan
-                  </button>
+                  </Link>
                 </div>
               </div>
 
