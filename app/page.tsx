@@ -8,27 +8,27 @@ import styles from './home.module.css';
 const products = [
   {
     id: 1,
-    name: "Red Batik Shirt",
+    name: "Model 1",
     price: "Rp 200.000",
-    image: "/images/1.png",
+    image: "/images/1.jpeg",
   },
   {
     id: 2,
-    name: "White Batik Shirt",
+    name: "Model 2",
     price: "Rp 250.000",
-    image: "/images/2.png",
+    image: "/images/2.jpeg",
   },
   {
     id: 3,
-    name: "Brown Batik Shirt",
+    name: "Model 3",
     price: "Rp 200.000",
-    image: "/images/3.png",
+    image: "/images/3.jpeg",
   },
   {
     id: 4,
-    name: "Swift Batik",
+    name: "Model 4",
     price: "Rp 300.000",
-    image: "/images/4.png",
+    image: "/images/4.jpeg",
   }
 ];
 
@@ -64,7 +64,7 @@ export default function Home() {
             Your one-stop-shop for<br />fashionable clothing
           </h1>
           <Image 
-            src="/images/5.png" 
+            src="/images/5.jpeg" 
             alt="De La Ropa Office" 
             width={960} 
             height={600}
@@ -109,7 +109,7 @@ export default function Home() {
       <section className={styles.spotlightSection}>
         <div className={styles.spotlightImageContainer}>
           <Image 
-            src="/images/6.png" 
+            src="/images/6.jpeg" 
             alt="New Collection Model"
             fill
             style={{ objectFit: 'cover' }}
