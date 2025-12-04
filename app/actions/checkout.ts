@@ -34,6 +34,7 @@ export async function processCheckout(totalAmount: number) {
           price: item.product.price,
           quantity: item.quantity,
           image: item.product.image,
+          size: item.size, 
         })),
       },
     },
@@ -45,6 +46,5 @@ export async function processCheckout(totalAmount: number) {
 
   revalidatePath('/history');
   revalidatePath('/wishlist');
-  
-  return { success: true, orderId: order.id };
+  redirect('/history');
 }

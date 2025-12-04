@@ -55,7 +55,7 @@ model CartItem {
 model Order {
   id        String      @id @default(uuid())
   userId    String
-  user      User        @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   total     Int
   status    String      @default("Selesai")
   createdAt DateTime    @default(now())
@@ -65,11 +65,12 @@ model Order {
 model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
   product   Product @relation(fields: [productId], references: [id])
   name      String
   price     Int
   quantity  Int
   image     String
+  size      String
 }
