@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '../[id]/detail.module.css';
+import { addToCart } from '@/app/actions/cart';
+import styles from './detail.module.css';
 
 interface ProductData {
   id: string;
@@ -16,7 +17,8 @@ interface ProductData {
 
 export default function ProductClient({ product }: { product: ProductData }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<string | null>('M');
+  const [selectedSize, setSelectedSize] = useState<string>('M');
+  const [isPending, setIsPending] = useState(false);
   
   const images = [product.image, product.image, product.image];
   const sizes = ['S', 'M', 'L', 'XL'];
@@ -27,6 +29,12 @@ export default function ProductClient({ product }: { product: ProductData }) {
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleAddToCart = async () => {
+    setIsPending(true);
+    await addToCart(product.id, selectedSize);
+    setIsPending(false);
   };
 
   return (
@@ -52,13 +60,13 @@ export default function ProductClient({ product }: { product: ProductData }) {
         </div>
 
         <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevBtn}`} aria-label="Previous Slide">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
           </svg>
         </button>
         <button onClick={nextSlide} className={`${styles.navButton} ${styles.nextBtn}`} aria-label="Next Slide">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+          <svg viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
           </svg>
         </button>
       </div>
@@ -93,9 +101,14 @@ export default function ProductClient({ product }: { product: ProductData }) {
         </div>
 
         <div className={styles.actionButtons}>
-          <Link href="/wishlist" className={styles.addToCart}>
-            Add to Cart {selectedSize && `- size ${selectedSize}`}
-          </Link>
+          <button 
+            onClick={handleAddToCart} 
+            disabled={isPending}
+            className={styles.addToCart}
+          >
+            {isPending ? 'Adding...' : `Add to Cart - Size ${selectedSize}`}
+          </button>
+          
           <Link href="/produk" className={styles.backButton}>
             Back to Shop
           </Link>

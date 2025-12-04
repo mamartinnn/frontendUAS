@@ -12,11 +12,15 @@
   width: 100%;
   max-width: 500px;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sliderContainer {
+  width: 100%;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 8px;
   aspect-ratio: 3 / 4;
   position: relative;
   background-color: #f9f9f9;
@@ -29,17 +33,10 @@
   width: 100%;
 }
 
-.sliderTrack[data-slide="0"] {
-  transform: translateX(0%);
-}
-
-.sliderTrack[data-slide="1"] {
-  transform: translateX(-100%);
-}
-
-.sliderTrack[data-slide="2"] {
-  transform: translateX(-200%);
-}
+.sliderTrack[data-slide="0"] { transform: translateX(0%); }
+.sliderTrack[data-slide="1"] { transform: translateX(-100%); }
+.sliderTrack[data-slide="2"] { transform: translateX(-200%); }
+.sliderTrack[data-slide="3"] { transform: translateX(-300%); }
 
 .slide {
   min-width: 100%;
@@ -58,7 +55,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid #e5e5e5;
   width: 45px;
   height: 45px;
@@ -67,15 +64,22 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 20;
   transition: all 0.2s;
-  color: #333;
+  color: #000000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .navButton:hover {
   background-color: #000;
   border-color: #000;
   color: #fff;
+}
+
+.navButton svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }
 
 .prevBtn {
@@ -94,8 +98,7 @@
 .productInfo h2 {
   margin: 0 0 15px 0;
   font-size: 2.5rem;
-  font-weight: 500;
-  letter-spacing: -0.5px;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -104,6 +107,8 @@
   margin-bottom: 35px;
   font-weight: 500;
   color: #000;
+  display: flex;
+  align-items: center;
 }
 
 .originalPrice {
@@ -154,25 +159,6 @@
   border-color: #000;
 }
 
-.productDescription {
-  margin-bottom: 40px;
-  padding-bottom: 10px;
-}
-
-.productDescription h3 {
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  font-weight: 700;
-}
-
-.productDescription p {
-  color: #333;
-  line-height: 1.6;
-  font-size: 1.2rem;
-}
-
 .actionButtons {
   display: flex;
   flex-direction: column;
@@ -196,21 +182,40 @@
   text-decoration: none;
   box-sizing: border-box;
   transition: opacity 0.2s;
-  border-radius: 4px;
 }
 
 .addToCart:hover, .backButton:hover {
   opacity: 0.85;
 }
 
+.productDescription {
+  margin-top: 50px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 30px;
+}
+
+.productDescription h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.productDescription p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
 @media (max-width: 900px) {
   .detailContainer {
     flex-direction: column;
-    margin: 0;
-    padding: 0;
-    gap: 30px;
+    margin: 20px auto;
+    padding: 0 20px;
+    gap: 40px;
     width: 100%;
-    max-width: 100%;
+    align-items: center;
   }
   
   .productGallery {
@@ -218,54 +223,57 @@
     width: 100%;
   }
 
-  .sliderContainer {
-    border-radius: 0;
-    aspect-ratio: 1 / 1;
-  }
-
   .productInfo {
-    padding: 0 24px 40px 24px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
+    align-items: center;
+    text-align: center;
+    padding: 0;
   }
 
   .productInfo h2 {
     font-size: 2rem;
-    text-align: center;
     margin-bottom: 10px;
   }
 
   .price {
-    font-size: 1.3rem;
-    justify-content: center;
+    font-size: 1.4rem;
     margin-bottom: 30px;
-    display: flex;
-    align-items: center;
+    justify-content: center;
   }
 
   .sizeSelection {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
   }
 
   .sizeButtons {
     justify-content: center;
+    gap: 15px;
+  }
+
+  .sizeBtn {
+    width: 50px;
+    height: 50px;
+    font-size: 0.9rem;
+  }
+
+  .actionButtons {
+    width: 100%;
+    gap: 15px;
+  }
+
+  .addToCart, .backButton {
+    padding: 20px;
+    font-size: 0.95rem;
   }
 
   .productDescription {
     text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .productDescription p {
-    font-size: 1.1rem;
-  }
-
-  .actionButtons {
+    margin-top: 40px;
     width: 100%;
   }
 }
