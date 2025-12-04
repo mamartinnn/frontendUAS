@@ -47,7 +47,7 @@ export default function SignInPage() {
         </form>
 
         <p className={styles.linkText}>
-          Don't have an account? <Link href="/signup" style={{ textDecoration: 'underline', color: 'black' }}>Register</Link>
+          Don&apos;t have an account? <Link href="/signup" style={{ textDecoration: 'underline', color: 'black' }}>Register</Link>
         </p>
       </div>
     </div>

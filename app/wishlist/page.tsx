@@ -1,55 +1,23 @@
-'use client';
-
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { removeFromCart } from '@/app/actions/cart';
 import styles from './wishlist.module.css';
 
-type CartItem = {
-  id: number;
-  name: string;
-  size: string;
-  price: number;
-  quantity: number;
-  image: string;
-};
+export const dynamic = 'force-dynamic';
 
-export default function WishlistPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'Soho Top Black',
-      size: 'Free Size',
-      price: 199000,
-      quantity: 1,
-      image: '/images/RobloxScreenShot20250924_171224509.png',
+export default async function WishlistPage() {
+  const cartItems = await prisma.cartItem.findMany({
+    include: {
+      product: true,
     },
-    {
-      id: 2,
-      name: 'Frau top Black',
-      size: 'Free Size',
-      price: 169000,
-      quantity: 1,
-      image: '/images/RobloxScreenShot20250924_171224509.png',
+    orderBy: {
+      createdAt: 'desc',
     },
-  ]);
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+  });
 
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc: number, item) => acc + item.product.price * item.quantity,
     0
   );
 
@@ -65,50 +33,56 @@ export default function WishlistPage() {
 
       {cartItems.map((item) => (
         <div key={item.id} className={styles.cartItem}>
-          <button 
-            className={styles.removeButton} 
-            onClick={() => removeItem(item.id)}
-          >
-            ×
-          </button>
+          <form action={removeFromCart.bind(null, item.id)}>
+            <button type="submit" className={styles.removeButton} aria-label="Remove item">
+              ×
+            </button>
+          </form>
           
           <div className={styles.productDetail}>
             <Image 
-              src={item.image} 
-              alt={item.name} 
+              src={item.product.image} 
+              alt={item.product.name} 
               width={80} 
               height={80} 
               className={styles.productImage} 
             />
             <div className={styles.productInfo}>
-              <span className={styles.productName}>{item.name} -</span>
-              <span className={styles.productSize}>{item.size}</span>
+              <span className={styles.productName}>{item.product.name}</span>
+              <span className={styles.productSize}>Size: {item.size}</span>
             </div>
           </div>
 
           <div className={styles.price}>
-            IDR {item.price.toLocaleString()}
+            IDR {item.product.price.toLocaleString('id-ID')}
           </div>
           
           <div>
-            <input 
-              type="number" 
-              value={item.quantity} 
-              min="1"
-              className={styles.quantityInput} 
-              onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-            />
+            <form className={styles.quantityForm}>
+              <input 
+                type="number" 
+                defaultValue={item.quantity}
+                min="1"
+                className={styles.quantityInput}
+                disabled 
+                aria-label="Quantity"
+              />
+            </form>
           </div>
 
           <div className={styles.totalPrice}>
-            IDR {(item.price * item.quantity).toLocaleString()}
+            IDR {(item.product.price * item.quantity).toLocaleString('id-ID')}
           </div>
         </div>
       ))}
 
       {cartItems.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-          Keranjang belanja Anda kosong.
+        <div className={styles.emptyCart}>
+          <h2>Your cart is empty</h2>
+          <p>Looks like you haven&apos;t added anything to your cart yet.</p>
+          <Link href="/produk" className={styles.startShoppingLink}>
+            Start Shopping
+          </Link>
         </div>
       )}
 
@@ -117,13 +91,12 @@ export default function WishlistPage() {
           
           <div className={styles.summaryRow}>
             <span>Subtotal</span>
-            <span style={{ fontWeight: 500 }}>IDR {subtotal.toLocaleString()}</span>
-            <span className={styles.saveBadge}>SAVE: IDR 150,000</span>
+            <span className={styles.subtotalValue}>IDR {subtotal.toLocaleString('id-ID')}</span>
           </div>
 
           <div className={styles.summaryRow}>
             <span className={styles.grandTotal}>Total</span>
-            <span className={styles.grandTotal}>IDR {subtotal.toLocaleString()}</span>
+            <span className={styles.grandTotal}>IDR {subtotal.toLocaleString('id-ID')}</span>
           </div>
 
           <Link href={`/payment?price=${subtotal}`} className={styles.checkoutButton}>
@@ -132,7 +105,6 @@ export default function WishlistPage() {
 
         </div>
       )}
-
     </div>
   );
 }
