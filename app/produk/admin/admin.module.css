@@ -1,136 +1,122 @@
-.produkSale {
-  padding: 20px;
+.adminContainer {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
-.produkSale h2 {
-  margin-bottom: 20px;
-  font-size: 2em;
-  text-align: left;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-.produkContainer {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.produkCard {
+.header {
   display: flex;
-  flex-direction: column;
-  border: 1px solid #eee;
-  background-color: #fff;
-  height: 100%;
-  transition: transform 0.3s ease;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-.produkCard:hover {
-  transform: translateY(-5px);
-}
-
-.produkImageLink {
-  text-decoration: none;
-  color: inherit;
-  flex-grow: 1;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-}
-
-.produkCard img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.produkCard h3,
-.produkCard .price {
-  margin: 0;
-  padding: 10px 15px 0 15px;
-}
-
-.produkCard h3 {
-  font-size: 1.2em;
-  margin-top: 10px;
+.title {
+  font-size: 2rem;
   font-weight: bold;
 }
 
-.price {
-  font-size: 1rem;
-  color: #000;
-}
-
-.originalPrice {
-  text-decoration: line-through;
-  color: #888;
-  margin-left: 8px;
-}
-
-.addToCart {
-  padding: 10px 20px;
+.addButton {
+  padding: 12px 24px;
   background-color: #000;
   color: #fff;
-  border: none;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
-  text-align: center;
-  margin: 15px;
   text-decoration: none;
-  font-size: 14px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: opacity 0.2s;
 }
 
-.addToCart:hover {
-  background-color: #333;
+.addButton:hover {
+  opacity: 0.8;
 }
 
-.addNewCard {
-  border: 2px dashed #ccc;
-  background-color: #f9f9f9;
-  min-height: 350px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.addNewCard:hover {
-  transform: translateY(0);
-  background-color: #f0f0f0;
-  border-color: #999;
-}
-
-.addNewLink {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.table {
   width: 100%;
-  height: 100%;
-  text-decoration: none;
-  color: #555;
+  border-collapse: collapse;
+  min-width: 800px;
 }
 
-.addNewContent {
-  text-align: center;
+.tableHead tr {
+  border-bottom: 2px solid #eee;
+  text-align: left;
 }
 
-.plusSign {
-  font-size: 4em;
-  font-weight: 200;
-  line-height: 1;
-  display: block;
+.tableHead th {
+  padding: 15px;
+  font-weight: 600;
 }
 
-.addNewContent p {
-  font-size: 1.2em;
-  margin-top: 10px;
+.tableRow {
+  border-bottom: 1px solid #eee;
+}
+
+.tableCell {
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.productName {
   font-weight: 500;
 }
 
-@media (min-width: 992px) {
-  .produkContainer {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.actionCell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.editButton {
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: 1px solid #ddd;
+  font-weight: 500;
+}
+
+.editButton:hover {
+  background-color: #e5e5e5;
+}
+
+.deleteButton {
+  padding: 8px 12px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #e60000;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.width80 {
+  width: 80px;
 }
