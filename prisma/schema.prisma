@@ -21,14 +21,15 @@ model User {
 }
 
 model Product {
-  id          String     @id @default(uuid())
-  name        String
-  price       Int
-  origPrice   Int
-  description String
-  image       String
-  createdAt   DateTime   @default(now())
-  cartItems   CartItem[]
+  id            String         @id @default(uuid())
+  name          String
+  price         Int
+  origPrice     Int
+  description   String
+  image         String
+  productImages ProductImage[]
+  createdAt     DateTime       @default(now())
+  cartItems     CartItem[]
 }
 
 model ProductImage {
@@ -41,9 +42,9 @@ model ProductImage {
 model CartItem {
   id        String   @id @default(uuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   size      String
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
