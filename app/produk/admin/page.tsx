@@ -3,9 +3,24 @@ import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import DeleteButton from './delete_btn';
 import styles from './admin.module.css';
+import Search from '@/app/components/search';
 
-export default async function AdminPage() {
+interface Props {
+  searchParams?: Promise<{
+    query?: string;
+  }>;
+}
+
+export default async function AdminPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || '';
+
   const products = await prisma.product.findMany({
+    where: {
+      name: {
+        contains: query,
+      },
+    },
     orderBy: { createdAt: 'desc' },
   });
 
@@ -17,6 +32,8 @@ export default async function AdminPage() {
           + Add New Product
         </Link>
       </div>
+
+      <Search placeholder="Cari produk di admin..." />
 
       <div className={styles.tableContainer}>
         <table className={styles.table}>
@@ -57,7 +74,7 @@ export default async function AdminPage() {
             {products.length === 0 && (
                 <tr>
                     <td colSpan={4} className={styles.emptyState}>
-                        No products found.
+                        No products found matching &quot;{query}&quot;
                     </td>
                 </tr>
             )}

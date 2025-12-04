@@ -1,0 +1,23 @@
+.searchWrapper {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.hiddenLabel {
+  display: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #000;
+}
