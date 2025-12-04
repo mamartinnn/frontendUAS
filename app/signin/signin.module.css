@@ -1,68 +1,65 @@
 .container {
   display: flex;
   justify-content: center;
-  align-items: center; /* Menengahkan vertikal */
-  min-height: 100vh;
-  background-color: #ffffff; /* Background putih bersih */
+  align-items: center;
+  min-height: 150px;
+  background-color: #ffffff;
   padding: 20px;
 }
 
 .formWrapper {
   width: 100%;
-  max-width: 400px; /* Lebar area form */
+  max-width: 400px;
   padding: 20px;
-  /* Kita hilangkan shadow dan background card agar minimalis seperti contoh */
 }
 
 .title {
   text-align: center;
-  margin-bottom: 3rem;
-  font-family: "Times New Roman", Times, serif; /* Font Serif sesuai gambar */
-  font-size: 2.5rem;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
   color: #000;
-  font-weight: 400; /* Tidak terlalu tebal */
+  font-weight: 400;
 }
 
 .inputGroup {
-  margin-bottom: 2rem; /* Spacing antar input agak jauh */
+  margin-bottom: 1.5rem;
   position: relative;
+  width: 100%;
 }
 
 .label {
   display: block;
   margin-bottom: 0.5rem;
-  font-size: 0.85rem;
-  color: #666; /* Abu-abu agak gelap */
-  font-family: sans-serif; /* Label tetap sans-serif agar terbaca jelas */
+  font-size: 0.8rem;
+  color: #555;
 }
 
 .input {
   width: 100%;
-  padding: 10px 0; /* Padding atas bawah, kiri kanan 0 */
+  padding: 0.5rem 0.2rem;
   border: none;
-  border-bottom: 1px solid #d1d1d1; /* Garis bawah saja */
+  border-bottom: 1px solid #ccc;
   outline: none;
   font-size: 1rem;
   background: transparent;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s;
   color: #000;
 }
 
 .input:focus {
-  border-bottom: 1px solid #000; /* Saat diklik garis jadi hitam */
+  border-bottom: 1px solid #000;
 }
 
 .button {
   width: 100%;
-  padding: 15px;
-  margin-top: 2rem;
+  padding: 0.75rem 1rem;
+  margin-top: 1.5rem;
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000; /* Border hitam */
+  border: 1px solid #000000;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: sans-serif;
+  transition: all 0.2s ease;
 }
 
 .button:hover {
@@ -75,5 +72,4 @@
   text-align: center;
   font-size: 0.9rem;
   color: #666;
-  font-family: sans-serif;
 }

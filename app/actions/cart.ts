@@ -3,12 +3,21 @@
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 export async function addToCart(productId: string, size: string) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('userId')?.value;
+
+  if (!userId) {
+    redirect('/signin');
+  }
+
   const existingItem = await prisma.cartItem.findFirst({
     where: {
       productId: productId,
       size: size,
+      userId: userId,
     },
   });
 
@@ -23,6 +32,7 @@ export async function addToCart(productId: string, size: string) {
         productId,
         size,
         quantity: 1,
+        userId,
       },
     });
   }

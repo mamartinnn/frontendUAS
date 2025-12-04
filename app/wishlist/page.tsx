@@ -3,11 +3,23 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { removeFromCart } from '@/app/actions/cart';
 import styles from './wishlist.module.css';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function WishlistPage() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('userId')?.value;
+
+  if (!userId) {
+    redirect('/signin');
+  }
+
   const cartItems = await prisma.cartItem.findMany({
+    where: {
+      userId: userId,
+    },
     include: {
       product: true,
     },

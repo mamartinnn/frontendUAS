@@ -1,42 +1,50 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
 import styles from './signin.module.css';
+import { loginUser } from '@/app/actions/auth';
 
 export default function SignInPage() {
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Logika login di sini...
-    // Jika sukses:
-    router.push('/produk');
+  const handleSubmit = async (formData: FormData) => {
+    const result = await loginUser(formData);
+    if (result?.error) {
+      setError(result.error);
+    }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        {/* Judul menggunakan font Serif sesuai gambar */}
         <h1 className={styles.title}>Sign In</h1>
         
-        <form onSubmit={handleLogin}>
+        {error && <p style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>{error}</p>}
+
+        <form action={handleSubmit}>
           <div className={styles.inputGroup}>
-            <label className={styles.label} htmlFor="email">Email address *</label>
+            <label className={styles.label} htmlFor="email">
+              Email address <span style={{ color: 'red' }}>*</span>
+            </label>
             <input 
               className={styles.input} 
               type="email" 
               id="email" 
+              name="email"
               required 
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <label className={styles.label} htmlFor="password">Password *</label>
+            <label className={styles.label} htmlFor="password">
+              Password <span style={{ color: 'red' }}>*</span>
+            </label>
             <input 
               className={styles.input} 
               type="password" 
               id="password" 
+              name="password"
               required 
             />
           </div>
