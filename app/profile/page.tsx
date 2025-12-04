@@ -1,28 +1,59 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { prisma } from '@/lib/prisma';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { logoutUser } from '@/app/actions/auth';
 import styles from './profile.module.css';
 
-export default function ProfilePage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ProfilePage() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('userId')?.value;
+
+  if (!userId) redirect('/signin');
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) redirect('/signin');
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        <h2 className={styles.title}>Welcome Back, Martin</h2>
+        <h2 className={styles.title}>Welcome Back, {user.username}</h2>
+        
         <div className={styles.accountInfo}>
           <Image 
-            src="/images/RobloxScreenShot20250924_171224509.png" 
+            src={user.image || '/images/user.png'} 
             alt="User Avatar" 
             width={100}
             height={100}
             className={styles.avatar}
+            style={{ objectFit: 'cover' }}
           />
           <div className={styles.details}>
-            <p><strong>Email:</strong> martin@example.com</p>
-            <p><strong>Member Since:</strong> January 2024</p>
-            <Link href="/profile/edit" className={styles.editButton}>
-              Edit Profile
-            </Link>
+            <p><strong>Name:</strong> {user.name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Phone:</strong> {user.phone || '-'}</p>
+            <p><strong>Member Since:</strong> {user.createdAt.toLocaleDateString()}</p>
+            
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Link href="/profile/edit" className={styles.editButton}>
+                Edit Profile
+              </Link>
+              
+              <form action={logoutUser}>
+                <button type="submit" className={styles.logoutButton}>
+                  Logout
+                </button>
+              </form>
+            </div>
           </div>
         </div>
+
         <div className={styles.orderHistory}>
           <h3>Your Orders</h3>
           <ul className={styles.orderList}>
@@ -34,17 +65,8 @@ export default function ProfilePage() {
                 <span style={{ color: 'green' }}>Delivered</span>
               </Link>
             </li>
-            <li>
-              <Link href="/history" className={styles.orderLink}>
-                <span>#DLR-1018</span>
-                <span>Linen Summer Dress</span>
-                <span>$89.00</span>
-                <span style={{ color: 'green' }}>Delivered</span>
-              </Link>
-            </li>
           </ul>
         </div>
-
       </div>
     </div>
   );
