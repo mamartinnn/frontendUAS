@@ -18,6 +18,7 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   cartItems CartItem[]
+  orders    Order[]
 }
 
 model Product {
@@ -30,6 +31,7 @@ model Product {
   productImages ProductImage[]
   createdAt     DateTime       @default(now())
   cartItems     CartItem[]
+  orderItems    OrderItem[]
 }
 
 model ProductImage {
@@ -48,4 +50,26 @@ model CartItem {
   size      String
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  total     Int
+  status    String      @default("Selesai")
+  createdAt DateTime    @default(now())
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String
+  price     Int
+  quantity  Int
+  image     String
 }

@@ -1,55 +1,28 @@
-'use client';
-
 import React from 'react';
 import styles from './history.module.css';
+import { prisma } from '@/lib/prisma';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-type ProductItem = {
-  name: string;
-  qty: number;
-  price: number;
-  image: string;
-};
+export const dynamic = 'force-dynamic';
 
-type Order = {
-  id: string;
-  date: string;
-  status: 'Selesai' | 'Sedang Dikirim' | 'Diproses' | 'Delivered';
-  total: number;
-  items: ProductItem[];
-};
+export default async function HistoryPage() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('userId')?.value;
 
-export default function HistoryPage() {
-  
-  const orders: Order[] = [
-    {
-      id: '#DLR-1023',
-      date: '15 November 2025',
-      status: 'Delivered', 
-      total: 129.00,
-      items: [
-        {
-          name: 'Tailored Blazer',
-          qty: 1,
-          price: 129.00,
-          image: '', 
-        },
-      ],
+  if (!userId) {
+    redirect('/signin');
+  }
+
+  const orders = await prisma.order.findMany({
+    where: { userId },
+    include: {
+      items: true, 
     },
-    {
-      id: '#DLR-1018',
-      date: '08 November 2025',
-      status: 'Delivered', 
-      total: 89.00,
-      items: [
-        {
-          name: 'Linen Summer Dress',
-          qty: 1,
-          price: 89.00,
-          image: '',
-        },
-      ],
+    orderBy: {
+      createdAt: 'desc',
     },
-  ];
+  });
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -76,8 +49,12 @@ export default function HistoryPage() {
               
               <div className={styles.header}>
                 <div>
-                  <div className={styles.orderId}>ID Pesanan: {order.id}</div>
-                  <span className={styles.orderDate}>{order.date}</span>
+                  <div className={styles.orderId}>ID Pesanan: #{order.id.slice(0, 8).toUpperCase()}</div>
+                  <span className={styles.orderDate}>
+                    {order.createdAt.toLocaleDateString('id-ID', {
+                      day: 'numeric', month: 'long', year: 'numeric'
+                    })}
+                  </span>
                 </div>
                 <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
                   {order.status}
@@ -85,8 +62,8 @@ export default function HistoryPage() {
               </div>
 
               <div>
-                {order.items.map((item, index) => (
-                  <div key={index} className={styles.itemRow}>
+                {order.items.map((item) => (
+                  <div key={item.id} className={styles.itemRow}>
                     <div className={styles.imageContainer}>
                       <img 
                         src={item.image} 
@@ -97,11 +74,11 @@ export default function HistoryPage() {
                     
                     <div className={styles.itemDetails}>
                       <h3 className={styles.itemName}>{item.name}</h3>
-                      <p className={styles.itemQty}>Jumlah: {item.qty} item</p>
+                      <p className={styles.itemQty}>Jumlah: {item.quantity} item</p>
                     </div>
 
                     <div className={styles.itemPrice}>
-                      ${item.price.toFixed(2)}
+                      IDR {item.price.toLocaleString('id-ID')}
                     </div>
                   </div>
                 ))}
@@ -110,20 +87,16 @@ export default function HistoryPage() {
               <div className={styles.footer}>
                 <div>
                   <span className={styles.totalLabel}>Total Belanja:</span>
-                  <span className={styles.totalPrice}>${order.total.toFixed(2)}</span>
+                  <span className={styles.totalPrice}>IDR {order.total.toLocaleString('id-ID')}</span>
                 </div>
                 
                 <div className={styles.actionButtons}>
-                  {(order.status === 'Selesai' || order.status === 'Delivered') && (
-                    <>
-                      <button className={`${styles.btn} ${styles.btnOutline}`}>
-                        Beli Lagi
-                      </button>
-                      <button className={`${styles.btn} ${styles.btnDark}`}>
-                        Beri Ulasan
-                      </button>
-                    </>
-                  )}
+                  <button className={`${styles.btn} ${styles.btnOutline}`}>
+                    Beli Lagi
+                  </button>
+                  <button className={`${styles.btn} ${styles.btnDark}`}>
+                    Beri Ulasan
+                  </button>
                 </div>
               </div>
 
