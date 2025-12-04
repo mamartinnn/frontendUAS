@@ -1,141 +1,146 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { revalidatePath } from 'next/cache'; // <--- (1) Import Wajib agar revalidatePath tidak merah
 
-export async function registerUser(formData: FormData) {
-  const username = formData.get('username') as string;
-  const email = formData.get('email') as string;
-  const phone = formData.get('phone') as string;
-  const password = formData.get('password') as string;
-  const confirmPassword = formData.get('confirmPassword') as string;
-
-  if (!username || !email || !password || !confirmPassword || !phone) {
-    return { error: 'Semua field wajib diisi' };
-  }
-
-  if (!email.endsWith('@gmail.com')) {
-    return { error: 'Email harus menggunakan domain @gmail.com' };
-  }
-
-  const phoneRegex = /^[0-9]+$/;
-  if (!phoneRegex.test(phone)) {
-    return { error: 'Nomor HP harus berupa angka' };
-  }
-
-  if (password.length < 6) {
-    return { error: 'Password minimal 6 karakter' };
-  }
-
-  if (password !== confirmPassword) {
-    return { error: 'Password tidak cocok' };
-  }
-
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existingUser) {
-    return { error: 'Email sudah terdaftar' };
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await prisma.user.create({
-    data: {
-      username,
-      email,
-      phone,
-      password: hashedPassword,
-      name: username,
-    },
-  });
-
-  redirect('/signin');
-}
-
-export async function loginUser(formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-
-  if (!email || !password) {
-    return { error: 'Email dan password wajib diisi' };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!user) {
-    return { error: 'Email atau password salah' };
-  }
-
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordValid) {
-    return { error: 'Email atau password salah' };
-  }
-
-  const cookieStore = await cookies();
-  cookieStore.set('userId', user.id, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 24 * 7, 
-    path: '/',
-  });
-
-  redirect('/produk');
-}
-
-export async function logoutUser() {
-  const cookieStore = await cookies();
-  cookieStore.delete('userId');
-  redirect('/signin');
-}
-
-export async function updateProfile(formData: FormData) {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get('userId')?.value;
-
-  if (!userId) redirect('/signin');
-
+export async function createProduct(formData: FormData) {
   const name = formData.get('name') as string;
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const imageFile = formData.get('avatar') as File;
+  const description = formData.get('description') as string;
+  
+  const MAX_INT = 2147483647;
+  const rawPrice = parseInt(formData.get('price') as string) || 0;
+  const rawOrigPrice = parseInt(formData.get('origPrice') as string) || 0;
+  const price = rawPrice > MAX_INT ? MAX_INT : rawPrice;
+  const origPrice = rawOrigPrice > MAX_INT ? MAX_INT : rawOrigPrice;
+  
+  const imageFiles = formData.getAll('imageUpload') as File[];
+  const validImages = imageFiles.filter(file => file.size > 0);
+  const finalImages = validImages.slice(0, 10);
 
-  const updateData: { name: string; email: string; password?: string; image?: string } = { name, email };
+  let uploadedPaths: string[] = [];
 
-  if (password && password.trim() !== '') {
-    if (password.length < 6) return { error: 'Password minimal 6 karakter' };
-    updateData.password = await bcrypt.hash(password, 10);
-  }
-
-  if (imageFile && imageFile.size > 0) {
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
-    const fileName = `avatar-${userId}-${Date.now()}${path.extname(imageFile.name)}`;
+  if (finalImages.length > 0) {
     const uploadDir = path.join(process.cwd(), 'public/uploads');
     
     try {
-      await fs.access(uploadDir);
+        await fs.access(uploadDir);
     } catch {
-      await fs.mkdir(uploadDir, { recursive: true });
+        await fs.mkdir(uploadDir, { recursive: true });
     }
-    
-    await fs.writeFile(path.join(uploadDir, fileName), buffer);
-    updateData.image = `/uploads/${fileName}`;
+
+    for (const imageFile of finalImages) {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '');
+        const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}-${cleanName}`;
+        
+        await fs.writeFile(path.join(uploadDir, fileName), buffer);
+        uploadedPaths.push(`/uploads/${fileName}`);
+    }
+  } else {
+    uploadedPaths.push('/images/placeholder.jpg');
   }
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: updateData,
+  const mainImage = uploadedPaths[0];
+
+  await prisma.product.create({
+    data: {
+      name,
+      price,
+      origPrice,
+      description,
+      image: mainImage,
+      productImages: {
+        create: uploadedPaths.map((path) => ({
+            url: path
+        }))
+      }
+    },
   });
 
-  revalidatePath('/profile');
-  redirect('/profile');
+  revalidatePath('/produk');
+  redirect('/produk');
+}
+
+export async function deleteProduct(id: string) {
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: { productImages: true }
+  });
+
+  if (product) {
+    for (const img of product.productImages) {
+        if (img.url.startsWith('/uploads/')) {
+            const filePath = path.join(process.cwd(), 'public', img.url);
+            try {
+                await fs.unlink(filePath);
+            } catch (error) {
+                console.error('File not found or cannot be deleted:', filePath);
+            }
+        }
+    }
+
+    await prisma.product.delete({
+      where: { id },
+    });
+  }
+
+  revalidatePath('/produk');
+  revalidatePath('/produk/admin');
+}
+
+export async function updateProduct(formData: FormData) {
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+
+    const MAX_INT = 2147483647;
+    const rawPrice = parseInt(formData.get('price') as string) || 0;
+    const rawOrigPrice = parseInt(formData.get('origPrice') as string) || 0;
+    const price = rawPrice > MAX_INT ? MAX_INT : rawPrice;
+    const origPrice = rawOrigPrice > MAX_INT ? MAX_INT : rawOrigPrice;
+
+    await prisma.product.update({
+        where: { id },
+        data: {
+            name,
+            price,
+            origPrice,
+            description,
+        }
+    });
+
+    const imageFiles = formData.getAll('imageUpload') as File[];
+    const validImages = imageFiles.filter(file => file.size > 0);
+    
+    if (validImages.length > 0) {
+        const uploadDir = path.join(process.cwd(), 'public/uploads');
+        let newPaths: string[] = [];
+
+        for (const imageFile of validImages) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const cleanName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '');
+            const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}-${cleanName}`;
+            
+            await fs.writeFile(path.join(uploadDir, fileName), buffer);
+            newPaths.push(`/uploads/${fileName}`);
+        }
+
+        await prisma.product.update({
+            where: { id },
+            data: {
+                image: newPaths[0], 
+                productImages: {
+                    deleteMany: {}, 
+                    create: newPaths.map(path => ({ url: path }))
+                }
+            }
+        });
+    }
+
+    revalidatePath('/produk');
+    revalidatePath(`/produk/${id}`);
+    redirect('/produk/admin');
 }
